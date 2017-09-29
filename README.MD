@@ -2,4 +2,4 @@
 ---
 简单的、可定义的启动页
 
-![screenshot](img/screenshot.jpg)
+![screenshot](images/screenshot.jpg)

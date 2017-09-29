@@ -19,8 +19,19 @@ $(document).ready(function(){
 		icon:null
 	}
 	var storeName = 'bookmark';
+	var addList = new Array();//等侍添加的列表，因为添加是异步的所以使用个列表来逐个添加，解决显示重复问题
 	
 	initDB(myDB.name,myDB.version);
+	
+	//颜色选择器
+	$('#picker').colpick({
+		onSubmit:setColor
+    });
+	
+	function setColor(hsb, hex, rgb, el) {
+		ff('pic').value = '#' + hex;
+		$('#picker').colpickHide();
+	}
 	
 	function getList(){
 		var transaction=myDB.db.transaction(storeName,'readonly'); 
@@ -32,7 +43,7 @@ $(document).ready(function(){
 		req.onsuccess = function(evt) {
 		  var cursor = evt.target.result;
 		  if (cursor) {
-			$('<style></style>').html('img{width:'+config.item_w+'px;height:'+config.item_h+'px;}').appendTo('head');
+			$('<style></style>').html('img{width:'+config.item_w+'px;height:'+config.item_h+'px; background:url(../images/transparent.png);vertical-align:middle;}').appendTo('head');
 						
 			var title = cursor.value.title;
 			var url = cursor.value.url;
@@ -41,9 +52,10 @@ $(document).ready(function(){
 				ii++;
 				$('table').append('<tr id=id'+ii+'></tr>');
 			}
-			$('<td></td>').html('<a href="'+url+'"><img src="'+icon+'" alt="'+title+'"/></a>').appendTo('#id'+ii);
-			i++;
+			$('<td></td>').html('<a href="'+url+'"><p style="text-align:center;line-height:113px;font-size:22px"><img id="img'+i + '" src="'+icon+'" onerror="onImageError();" alt=""/></p></a>').appendTo('#id'+ii);
 			
+			ff('img'+i).onerror = onImageError;
+			i++;
 			// Move on to the next object in store
 			cursor.continue();
 
@@ -53,11 +65,31 @@ $(document).ready(function(){
 		};
 	}
 	
+	function onImageError(){
+		var img = event.srcElement;
+		if (img.description != null && img.description.substring(0,1) == '#'){
+			img.style.background = img.description;
+		} else {
+			img.parentNode.style.background = "#FFF000";
+			img.parentNode.style.width = config.item_w+"px";
+			img.parentNode.style.height = config.item_h+"px";
+			//img.style.background = getColor();
+		}
+		
+		//alert(img.background);
+		img.onerror=null; //控制不要防止死循环
+	}
+	
 	ff('pic').addEventListener('keyup', function(ev){
 		var ev=ev || window.event;
 		if(ev.keyCode==13){
 			if (checkInput()){
-				addData(ff('name').value, ff('url').value, ff('pic').value);
+				var url = ff('url').value;
+				if (url.indexOf('http://') != 0 && url.indexOf('https://') != 0){
+					url = 'http://'+url;
+				}
+				addList.push({title:ff('name').value, url, icon:ff('pic').value});
+				addData();
 			}
 		}
 		ev.preventDefault();
@@ -118,22 +150,24 @@ $(document).ready(function(){
 		};
 	}
 	
-	function addData(name, url, pic){
-		if (name == '' || url == ''){
+	function addData(){
+		if (addList == null || addList.length == 0){
 			return false;
 		}
 		var tx = myDB.db.transaction(storeName, 'readwrite');
 		var store = tx.objectStore(storeName);
-		item.title = name;
-		item.url = url;
-		item.icon = pic;
-		var req = store.add(item);
+		var d = addList.shift();
+		var req = store.add(d);
 		req.onsuccess = function (evt) {
-		  console.debug("Insertion in DB successful");
-		  getList();
+		  console.debug("added successful:"+JSON.stringify(d));
+		  if (addList.length > 0){
+			  addData();
+		  } else {
+			  getList();
+		  }
 		};
 		req.onerror = function() {
-		  console.error("add error", this.error);
+		    console.error("add error", this.error);
 		};
     }
 	
@@ -161,15 +195,21 @@ $(document).ready(function(){
 			dataType: "xml",
 			success: function(xml) {
 				$(xml).find('bookmark').each(function(){				
-					var title = $(this).find('title').text();
-					var url = $(this).find('url').text();
-					var icon = $(this).find('icon').text();
-					if (title != '' && url != ''){
-						addData(title, url, icon)
+					var t = $(this).find('title').text();
+					var u = $(this).find('url').text();
+					var i = $(this).find('icon').text();
+					if (t != '' && u != ''){
+						addList.push({title:t, url:u, icon:i});
 					}
 				});
+				addData();
 			}
 		});
+	}
+	
+	//获取随机颜色值
+	function getColor(){
+	  return '#' + Math.floor((Math.random()*(0xFFFFFF<<0))).toString(16); //左移0位即可转为int，得到随机数再转为16进制
 	}
 
 });

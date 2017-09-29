@@ -8,72 +8,72 @@
 	<bookmark>
 		<title>百度</title>
 		<url>https://www.baidu.com</url>
-		<icon>img/baidu.png</icon>
+		<icon>images/baidu.png</icon>
 	</bookmark>
 	<bookmark>
 		<title>Google</title>
 		<url>https://www.google.com</url>
-		<icon>img/google.jpg</icon>
+		<icon>images/google.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>优博客</title>
 		<url>https://ubock.com</url>
-		<icon>img/ubock.png</icon>
+		<icon>images/ubock.png</icon>
 	</bookmark>
 	<bookmark>
 		<title>淘宝</title>
 		<url>https://www.taobao.com</url>
-		<icon>img/taobao.jpg</icon>
+		<icon>images/taobao.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>京东</title>
 		<url>https://www.jd.com</url>
-		<icon>img/jingdong.jpg</icon>
+		<icon>images/jingdong.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>天猫</title>
 		<url>https://www.tmall.com</url>
-		<icon>img/tmall.jpg</icon>
+		<icon>images/tmall.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>GitHub</title>
 		<url>https://github.com/</url>
-		<icon>img/github.jpg</icon>
+		<icon>images/github.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>CSDN</title>
 		<url>http://www.csdn.net</url>
-		<icon>img/csdn.jpg</icon>
+		<icon>images/csdn.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>StackOverflow</title>
 		<url>https://stackoverflow.com/</url>
-		<icon>img/stackoverflow.jpg</icon>
+		<icon>images/stackoverflow.jpg</icon>
 	</bookmark>
 	<bookmark>
 		<title>开源中国</title>
 		<url>https://oschina.net/</url>
-		<icon>img/oschina.svg</icon>
+		<icon>images/oschina.svg</icon>
 	</bookmark>
 	<bookmark>
 		<title>码云</title>
 		<url>https://gitee.com/</url>
-		<icon>img/gitee.svg</icon>
+		<icon>images/gitee.svg</icon>
 	</bookmark>
 	<bookmark>
 		<title>BeeGo</title>
 		<url>https://beego.me/</url>
-		<icon>img/beego.png</icon>
+		<icon>images/beego.png</icon>
 	</bookmark>
 	<bookmark>
 		<title>Go Walker</title>
 		<url>https://golang.org/</url>
-		<icon>img/gowallker.png</icon>
+		<icon>images/gowallker.png</icon>
 	</bookmark>
 	<bookmark>
 		<title>Go</title>
 		<url>https://golang.org/</url>
-		<icon>img/golang.jpg</icon>
+		<icon>images/golang.jpg</icon>
 	</bookmark>
 
 </content>

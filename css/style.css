@@ -10,7 +10,7 @@
 }
 
 body{
-	background:url('bg.png') center center;
+	background:url('../images/bg.png') center center;
 	font-family: Tahoma, Arial, "MS Trebuchet", sans-serif;
 }
 
@@ -38,7 +38,7 @@ input{
 }
 
 input:focus{
-        border-bottom:2px #3199F9 solid;
+    border-bottom:2px #3199F9 solid;
 	link rel('favico.png"');
 }
 
@@ -57,7 +57,7 @@ button{
 
 button:hover,
 img:hover{
-	border-bottom:2px #565656 solid;
+	border:2px #A1CFFC solid;
 }
 
 button:active{
@@ -74,8 +74,7 @@ table td{
 
 img{
 	border-radius:0px;
-	border:0px #D9EAF9 solid;
-	border-bottom:2px #A1CFFC solid;
+	border:2px solid rgba(255,255,255,0);
 }
 
 
