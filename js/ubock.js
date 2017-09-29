@@ -52,9 +52,13 @@ $(document).ready(function(){
 				ii++;
 				$('table').append('<tr id=id'+ii+'></tr>');
 			}
-			$('<td></td>').html('<a href="'+url+'"><p style="text-align:center;line-height:113px;font-size:22px"><img id="img'+i + '" src="'+icon+'" onerror="onImageError();" alt=""/></p></a>').appendTo('#id'+ii);
+			if (icon != null && icon.length > 1 && icon.substring(0,1) == '#'){
+				$('<td></td>').html('<a href="'+url+'"><p class="nopic" style="text-align:center;line-height:'+config.item_h+'px;font-size:22px;background:'+icon+';">'+title+'</p></a>').appendTo('#id'+ii);
+			} else {
+				$('<td></td>').html('<a href="'+url+'"><p style="text-align:center;line-height:'+config.item_h+'px;font-size:22px"><img id="img'+i + '" src="'+icon+'" onerror="onImageError();" alt="'+title+'"/></p></a>').appendTo('#id'+ii);
+				ff('img'+i).onerror = onImageError;
+			}
 			
-			ff('img'+i).onerror = onImageError;
 			i++;
 			// Move on to the next object in store
 			cursor.continue();
@@ -65,18 +69,14 @@ $(document).ready(function(){
 		};
 	}
 	
+	//图片加载失败时用随机颜色替换，并显示名称
 	function onImageError(){
 		var img = event.srcElement;
-		if (img.description != null && img.description.substring(0,1) == '#'){
-			img.style.background = img.description;
-		} else {
-			img.parentNode.style.background = "#FFF000";
-			img.parentNode.style.width = config.item_w+"px";
-			img.parentNode.style.height = config.item_h+"px";
-			//img.style.background = getColor();
-		}
-		
-		//alert(img.background);
+		img.parentNode.style.background = getColor();
+		img.parentNode.style.width = config.item_w+"px";
+		img.parentNode.style.height = config.item_h+"px";
+		img.parentNode.className = "nopic";
+		img.parentNode.innerHTML=img.alt;
 		img.onerror=null; //控制不要防止死循环
 	}
 	

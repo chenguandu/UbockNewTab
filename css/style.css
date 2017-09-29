@@ -60,6 +60,10 @@ img:hover{
 	border:2px #A1CFFC solid;
 }
 
+.nopic:hover{
+	border:2px #A1CFFC solid;
+}
+
 button:active{
 	border-bottom:2px #3199F9 solid;
 }
