@@ -2,6 +2,6 @@
 ---
 简单的、可自定义的chrome启动页插件
 
-修改中文乱码
+修改git中文乱码
 
 ![screenshot](images/screenshot.jpg)
