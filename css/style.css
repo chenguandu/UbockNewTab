@@ -56,12 +56,15 @@ button{
 }
 
 button:hover,
-img:hover{
+.item:hover{
 	border:2px #A1CFFC solid;
 }
 
-.nopic:hover{
-	border:2px #A1CFFC solid;
+.item{
+	border:2px solid rgba(255,255,255,0);
+	text-align:center;
+	font-size:22px;
+	color:#FFFFFF;
 }
 
 button:active{
@@ -76,9 +79,5 @@ table td{
 	padding:5px;
 }
 
-img{
-	border-radius:0px;
-	border:2px solid rgba(255,255,255,0);
-}
 
 

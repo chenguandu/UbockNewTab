@@ -21,6 +21,8 @@ $(document).ready(function(){
 	var storeName = 'bookmark';
 	var addList = new Array();//等侍添加的列表，因为添加是异步的所以使用个列表来逐个添加，解决显示重复问题
 	
+	$('<style></style>').html('td a div{width:'+config.item_w+'px;height:'+config.item_h+'px; }').appendTo('head');
+	
 	initDB(myDB.name,myDB.version);
 	
 	//颜色选择器
@@ -37,14 +39,13 @@ $(document).ready(function(){
 		var transaction=myDB.db.transaction(storeName,'readonly'); 
 		var store=transaction.objectStore(storeName); 
 		req = store.openCursor();
-		var i=0;
+		var i = 0;
 		var ii=0;
 		$('table').html('');
 		req.onsuccess = function(evt) {
 		  var cursor = evt.target.result;
 		  if (cursor) {
-			$('<style></style>').html('img{width:'+config.item_w+'px;height:'+config.item_h+'px; background:url(../images/transparent.png);vertical-align:middle;}').appendTo('head');
-						
+			var id = cursor.key;
 			var title = cursor.value.title;
 			var url = cursor.value.url;
 			var icon = cursor.value.icon;
@@ -53,14 +54,13 @@ $(document).ready(function(){
 				$('table').append('<tr id=id'+ii+'></tr>');
 			}
 			if (icon != null && icon.length > 1 && icon.substring(0,1) == '#'){
-				$('<td></td>').html('<a href="'+url+'"><p class="nopic" style="text-align:center;line-height:'+config.item_h+'px;font-size:22px;background:'+icon+';">'+title+'</p></a>').appendTo('#id'+ii);
+				$('<td></td>').html('<a href="'+url+'"><div id="item'+id+'" class="item" style="background:'+icon+';"><p>编辑</p><p>'+title+'</p></div></a>').appendTo('#id'+ii);
 			} else {
-				$('<td></td>').html('<a href="'+url+'"><p style="text-align:center;line-height:'+config.item_h+'px;font-size:22px"><img id="img'+i + '" src="'+icon+'" onerror="onImageError();" alt="'+title+'"/></p></a>').appendTo('#id'+ii);
-				ff('img'+i).onerror = onImageError;
+				$('<td></td>').html('<a href="'+url+'"><div id="item'+id+'" class="item" ><img style="width:100%;height:100%;" id="img'+id+ '" src="'+icon+'" onerror="onImageError();" alt="'+title+'"/></div></a>').appendTo('#id'+ii);
+				ff('img'+id).onerror = onImageError;
 			}
-			
 			i++;
-			// Move on to the next object in store
+			// Move to the next object in store
 			cursor.continue();
 
 		  } else {
@@ -73,9 +73,6 @@ $(document).ready(function(){
 	function onImageError(){
 		var img = event.srcElement;
 		img.parentNode.style.background = getColor();
-		img.parentNode.style.width = config.item_w+"px";
-		img.parentNode.style.height = config.item_h+"px";
-		img.parentNode.className = "nopic";
 		img.parentNode.innerHTML=img.alt;
 		img.onerror=null; //控制不要防止死循环
 	}
