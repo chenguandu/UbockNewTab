@@ -19,10 +19,16 @@
 		<table id="list">
 
 		</table>
-		<div id="addItemDiv">添加新项</div>
-		<div><input type="text" id="name" /></div>
-		<div><input type="text" id="url" /></div>
-		<div><input type="text" id="pic" placeholder="请输入图片URL或颜色值，如http://a.com/a.jpg或#FFFFFF" /></div>
-		<button id="picker">Show Color Picker</button>
+		<div class="addItemCon">
+		<div class="addItemTitle">添加新项</div>
+		<div><input type="text" id="name" placeholder="请输入名称"/></div>
+		<div><input type="text" id="url"  placeholder="请输网址：https://或http://开头"/></div>
+		<div>
+		    <input type="text" id="pic" placeholder="请输入图片URL或颜色值，如http://a.com/a.jpg或#FFFFFF" />
+			<button id="picker" style="float:right;">选择颜色</button>
+		</div>
+		
+		<button id="addItem">保存</button>
+		</div>
 	</body>
 </html>

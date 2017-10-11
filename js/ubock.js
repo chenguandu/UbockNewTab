@@ -30,6 +30,19 @@ $(document).ready(function(){
 		onSubmit:setColor
     });
 	
+	$("#addItem").on('click', saveData);
+	
+	function saveData(){
+		if (checkInput()){
+				var url = ff('url').value;
+				if (url.indexOf('http://') != 0 && url.indexOf('https://') != 0){
+					url = 'http://'+url;
+				}
+				addList.push({title:ff('name').value, url, icon:ff('pic').value});
+				addData();
+		}
+	}
+	
 	function setColor(hsb, hex, rgb, el) {
 		ff('pic').value = '#' + hex;
 		$('#picker').colpickHide();
@@ -54,9 +67,10 @@ $(document).ready(function(){
 				$('table').append('<tr id=id'+ii+'></tr>');
 			}
 			if (icon != null && icon.length > 1 && icon.substring(0,1) == '#'){
-				$('<td></td>').html('<a href="'+url+'"><div id="item'+id+'" class="item" style="background:'+icon+';"><p>编辑</p><p>'+title+'</p></div></a>').appendTo('#id'+ii);
+				$('<td id="con'+id+'"></td>').html('<a href="'+url+'"><div id="item'+id+'" class="item" style="background:'+icon+';"><p>编辑</p><p id="del'+id+'">删除</p><p>'+title+'</p></div></a>').appendTo('#id'+ii);
+				ff('del'+id).onclick = del;
 			} else {
-				$('<td></td>').html('<a href="'+url+'"><div id="item'+id+'" class="item" ><img style="width:100%;height:100%;" id="img'+id+ '" src="'+icon+'" onerror="onImageError();" alt="'+title+'"/></div></a>').appendTo('#id'+ii);
+				$('<td id="con'+id+'"></td>').html('<a href="'+url+'"><div id="item'+id+'" class="item" ><img style="width:100%;height:100%;" id="img'+id+ '" src="'+icon+'" onerror="onImageError();" alt="'+title+'"/></div></a>').appendTo('#id'+ii);
 				ff('img'+id).onerror = onImageError;
 			}
 			i++;
@@ -67,6 +81,14 @@ $(document).ready(function(){
 			console.debug("No more entries!");
 		  }
 		};
+	}
+	
+	function del(){
+		var item = event.srcElement;
+		var id = item.id.substr(3);
+		deleteById(parseInt(id));
+		event.preventDefault();
+		return false;
 	}
 	
 	//图片加载失败时用随机颜色替换，并显示名称
@@ -80,14 +102,7 @@ $(document).ready(function(){
 	ff('pic').addEventListener('keyup', function(ev){
 		var ev=ev || window.event;
 		if(ev.keyCode==13){
-			if (checkInput()){
-				var url = ff('url').value;
-				if (url.indexOf('http://') != 0 && url.indexOf('https://') != 0){
-					url = 'http://'+url;
-				}
-				addList.push({title:ff('name').value, url, icon:ff('pic').value});
-				addData();
-			}
+			saveData();
 		}
 		ev.preventDefault();
 	});
@@ -167,6 +182,39 @@ $(document).ready(function(){
 		    console.error("add error", this.error);
 		};
     }
+	
+	/** 
+     * 修改操作  
+     */  
+    function updateById(params,key)  
+    {  
+        var transaction = myDB.db.transaction(storeName, "readwrite");  
+        var store = transaction.objectStore(storeName);  
+        var request = store.put(params,key);  
+        request.onsuccess = function(){  
+             console.log('修改成功');  
+        };  
+        request.onerror = function(event){  
+            alert('修改失败'); 
+        }  
+    };  
+	
+	/** 
+     * 删除数据  
+     */  
+    function deleteById(id)  
+    {   
+        var store = myDB.db.transaction(storeName, "readwrite").objectStore(storeName); 
+        var request = store.delete(id)		
+        request.onsuccess = function(){  
+            console.log('删除成功');  
+			var item = ff('con'+id);
+			item.parentNode.removeChild(item);
+        } 
+		request.onerror = function() {
+		    alert("删除失败");
+		};		
+    }; 
 	
 	function closeDB(db){
         db.close();
