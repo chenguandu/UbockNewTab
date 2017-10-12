@@ -222,12 +222,18 @@ $(document).ready(function(){
 	
 	function checkInput(){
 		if (ff('name').value == ''){
-			alert('请输入名称');
-			ff('name').focus;
+			//alert('请输入名称');
+			DJMask.alert("请输入名称",function(){ff('name').focus();}, "错误提示")
+			/* DJMask.open({
+					width:"400px",
+					height:"auto",
+					title:"HHHHH",
+					content:'<div>请输入名称</div><a style="display:block;width:50px;height:25px;line-height:25px;text-align:center;border-radius:4px;background:#428bca;color:#fff;cursor:pointer;float:right;margin:5px;padding:0" class="dj-alert-ok">确定</a>'
+				}); */
 			return false;
 		} else if (ff('url').value == ''){
-			alert('请输入网址');
-			ff('url').focus;
+			/* alert('请输入网址'); */
+			DJMask.alert("请输入名称",function(){ff('url').focus();})
 			return false;
 		}
 		return true;
