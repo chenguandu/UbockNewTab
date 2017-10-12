@@ -228,7 +228,7 @@ Based on Stefan Petre's Color Picker www.eyecon.ro, dual licensed under the MIT 
 				if (left + 346 > viewPort.l + viewPort.w) {
 					left -= 346;
 				}
-				cal.css({left: left + 'px', top: top + 'px'});
+				cal.css({left: left + 'px', top: top-cal.data('colpick').height - this.offsetHeight + 'px'});
 				if (cal.data('colpick').onShow.apply(this, [cal.get(0)]) != false) {
 					cal.show();
 				}

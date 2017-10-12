@@ -17,7 +17,7 @@
 	</head>
 	<body>
 		<form action="https://www.baidu.com/s" method="get">
-			<input type="text" name="wd" value="" /><button type="submit">搜索</button>
+			<input type="text" name="wd" id="wd" value="" /><button type="submit">百度搜索</button>
 		</form>
 		<table id="list">
 
@@ -32,6 +32,8 @@
 		</div>
 		
 		<button id="addItem">保存</button><button id="cancel">取消</button>
+		<!-- add锚点:点击添加时跳转到最底，显示添加区域 -->
+		<a name="add" id="add" href="#add"> </a>
 		</div>
 	</body>
 </html>

@@ -2,9 +2,12 @@ $(document).ready(function () {
     var ff = function (id) {
         return document.getElementById(id);
     }
+	
     //调整webkit兼容性
     window.indexedDB = window.indexedDB || window.webkitIndexedDB;
     var init = false;
+	//当前编辑项id
+	var currentId = 0;
     var myDB = {
         name: 'ubock',
         version: 1,
@@ -23,7 +26,7 @@ $(document).ready(function () {
     var storeName = 'bookmark';
     var addList = new Array();//等侍添加的列表，因为添加是异步的所以使用个列表来逐个添加，解决显示重复问题
 
-    $('<style></style>').html('td a div{width:' + config.item_w + 'px;height:' + config.item_h + 'px; }').appendTo('head');
+    $('<style></style>').html('td,td a div{width:' + config.item_w + 'px;height:' + config.item_h + 'px; }').appendTo('head');
 
     initDB(myDB.name, myDB.version);
 
@@ -69,12 +72,12 @@ $(document).ready(function () {
                     $('table').append('<tr id=id' + ii + '></tr>');
                 }
                 if (icon != null && icon.length > 1 && icon.substring(0, 1) == '#') {
-                    $('<td id="con' + id + '"></td>').html('<a href="' + url + '"><div id="item' + id + '" class="item" style="background:' + icon + ';">' + title + '</p></div></a>').appendTo('#id' + ii);
+                    $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item" style="background:' + icon + ';">' + title + '</p></div></a>').appendTo('#id' + ii);
                 } else {
-                    $('<td id="con' + id + '"></td>').html('<a href="' + url + '"><div id="item' + id + '" class="item" ><img style="width:100%;height:100%;" id="imgs' + id + '" src="' + icon + '" onerror="onImageError();" alt="' + title + '"/></div></a>').appendTo('#id' + ii);
+                    $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item" ><img style="width:100%;height:100%;" id="imgs' + id + '" src="' + icon + '" onerror="onImageError();" alt="' + title + '"/></div></a>').appendTo('#id' + ii);
                     ff('imgs' + id).onerror = onImageError;
                 }
-				$('#item' + id).bind("mousedown", menu);
+				$('#item' + id).mousedown(menu);
                 i++;
                 // Move to the next object in store
                 cursor.continue();
@@ -176,6 +179,25 @@ $(document).ready(function () {
             console.error("add error", this.error);
         };
     }
+	
+	/**
+     * 查询操作
+     */
+	function getById(id, callback){
+            //根据存储空间的键找到对应数据
+            var store = myDB.db.transaction(storeName,'readwrite').objectStore(storeName);
+            var request = store.get(id);
+            request.onerror = function(){
+                console.error('getById error');
+            };
+            request.onsuccess = function(e){
+                var result = e.target.result;
+                console.log('查找数据成功')
+				if (callback){
+					callback(result);
+				}
+            };
+        }
 
     /**
      * 修改操作
@@ -258,13 +280,35 @@ $(document).ready(function () {
     function getColor() {
         return '#' + Math.floor((Math.random() * (0xFFFFFF << 0))).toString(16); //左移0位即可转为int，得到随机数再转为16进制
     }
+	
+	//显示编辑区域
+	function showEditor(title, url, icon){
+		ff('addItemCon').style.display = "block";
+		ff('name').value = title;
+		ff('url').value = url;
+		ff('pic').value = icon;
+		window.location.href="#add" 
+		ff('name').focus();
+	}
+	
+	//隐藏编辑区域
+	function hideEditor(){
+		ff('addItemCon').style.display = "none";
+	}
+	
+	//清空编辑区域内容
+	function clearEditor(){
+		ff('name').value = "";
+		ff('url').value = "";
+		ff('pic').value = "";
+	}
 
 	//$("#TablebillList tbody tr").bind("mousedown", menu);
 	function menu(e) {
         if (e.which == 3) {
-
+			var item = e.target;
             var opertionn = {
-                name: "",
+                name: "menu",
                 offsetX: 2,
                 offsetY: 2,
                 textLimit: 10,
@@ -276,23 +320,41 @@ $(document).ready(function () {
                 [{
                     text: "添加",
                     func: function () {
-                        ff('addItemCon').style.display = "block";
-						$("#cancel").on('click', function(){ff('addItemCon').style.display = "none";});
+						currentId = 0;
+                        showEditor('','','');
+						$("#cancel").on('click', function(){
+							    //取消编辑清空id
+							    currentId = 0;
+								ff('addItemCon').style.display = "none";
+							});
                     }
                 }, {
                     text: "编辑",
                     func: function () {
-                        
+                        currentId = parseInt(item.id.substr(4));
+						console.log("current edit item id = " + currentId);
+						getById(currentId, function(result){
+							console.log(result);
+							showEditor(result.title, result.url, result.icon);
+						});
                     }
                 }, {
                     text: "删除",
                     func: function () {
-                        var item = e.target;
-						var id = item.id.substr(4);
-						deleteById(parseInt(id));
+						var delId = parseInt(item.id.substr(4));
+						//删除的是当前编辑项时关闭编辑区并清空内容
+						if (currentId == delId){
+							clearEditor();
+							hideEditor();
+						}							
+						console.log("delete item id = " + delId);
+						deleteById(delId);
                     }
                 }]
             ];
+			//使用随机数确保每次右键弹出的菜单都不一样，否则取到的id会是同一个
+			opertionn.name = "menu" + (Math.random() * 100000 + '').replace('.','');
+			console.log(opertionn.name);
             $(this).smartMenu(imageMenuData, opertionn);
         }
     }
