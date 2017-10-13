@@ -29,6 +29,7 @@ $(document).ready(function () {
     $('<style></style>').html('td,td a div{width:' + config.item_w + 'px;height:' + config.item_h + 'px; }').appendTo('head');
 
     initDB(myDB.name, myDB.version);
+	$('html').mousedown(menu);
 
     //颜色选择器
     $('#picker').colpick({
@@ -43,8 +44,12 @@ $(document).ready(function () {
             if (url.indexOf('http://') != 0 && url.indexOf('https://') != 0) {
                 url = 'http://' + url;
             }
-            addList.push({title: ff('name').value, url, icon: ff('pic').value});
-            addData();
+			if (currentId != 0){
+				updateById({id:currentId, title: ff('name').value, url, icon: ff('pic').value})
+			} else {
+				addList.push({title: ff('name').value, url, icon: ff('pic').value});
+				addData();
+			}
         }
     }
 
@@ -72,9 +77,9 @@ $(document).ready(function () {
                     $('table').append('<tr id=id' + ii + '></tr>');
                 }
                 if (icon != null && icon.length > 1 && icon.substring(0, 1) == '#') {
-                    $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item" style="background:' + icon + ';">' + title + '</p></div></a>').appendTo('#id' + ii);
+                    $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item" style="background:' + icon + ';line-height:' + config.item_h + 'px;">' + title + '</p></div></a>').appendTo('#id' + ii);
                 } else {
-                    $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item" ><img style="width:100%;height:100%;" id="imgs' + id + '" src="' + icon + '" onerror="onImageError();" alt="' + title + '"/></div></a>').appendTo('#id' + ii);
+                    $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item"  style="line-height:' + config.item_h + 'px;"><img style="width:100%;height:100%;" id="imgs' + id + '" src="' + icon + '" onerror="onImageError();" alt="' + title + '"/></div></a>').appendTo('#id' + ii);
                     ff('imgs' + id).onerror = onImageError;
                 }
 				$('#item' + id).mousedown(menu);
@@ -202,15 +207,16 @@ $(document).ready(function () {
     /**
      * 修改操作
      */
-    function updateById(params, key) {
+    function updateById(params) {
         var transaction = myDB.db.transaction(storeName, "readwrite");
         var store = transaction.objectStore(storeName);
-        var request = store.put(params, key);
+        var request = store.put(params);
         request.onsuccess = function () {
             console.log('修改成功');
+			DJMask.msg('修改成功');
         };
         request.onerror = function (event) {
-            alert('修改失败');
+            DJMask.msg('修改失败');
         }
     };
 
@@ -222,11 +228,12 @@ $(document).ready(function () {
         var request = store.delete(id)
         request.onsuccess = function () {
             console.log('删除成功');
+			DJMask.msg('删除成功');
             var item = ff('con' + id);
             item.parentNode.removeChild(item);
         }
         request.onerror = function () {
-            alert("删除失败");
+            DJMask.msg("删除失败");
         };
     };
 
@@ -249,7 +256,7 @@ $(document).ready(function () {
             return false;
         } else if (ff('url').value == '') {
             /* alert('请输入网址'); */
-            DJMask.alert("请输入名称", function () {
+            DJMask.alert("请输入网址", function () {
                 ff('url').focus();
             })
             return false;
@@ -321,6 +328,7 @@ $(document).ready(function () {
                     text: "添加",
                     func: function () {
 						currentId = 0;
+						$('.addItemTitle').html("添加");
                         showEditor('','','');
 						$("#cancel").on('click', function(){
 							    //取消编辑清空id
@@ -331,6 +339,7 @@ $(document).ready(function () {
                 }, {
                     text: "编辑",
                     func: function () {
+						$('.addItemTitle').html("编辑");
                         currentId = parseInt(item.id.substr(4));
 						console.log("current edit item id = " + currentId);
 						getById(currentId, function(result){
@@ -350,11 +359,19 @@ $(document).ready(function () {
 						console.log("delete item id = " + delId);
 						deleteById(delId);
                     }
+                }, {
+                    text: "关闭",
+                    func: function () {}
                 }]
             ];
+			
+			if (item.id == '' || item.id.length < 5 || (item.id.substring(0, 4) != "item" && item.id.substring(0, 4) != "imgs")){
+				imageMenuData[0].splice(1,2);
+			}
 			//使用随机数确保每次右键弹出的菜单都不一样，否则取到的id会是同一个
 			opertionn.name = "menu" + (Math.random() * 100000 + '').replace('.','');
 			console.log(opertionn.name);
+			
             $(this).smartMenu(imageMenuData, opertionn);
         }
     }
