@@ -179,6 +179,7 @@ $(document).ready(function () {
             } else {
                 getList();
             }
+			clearEditor();
         };
         req.onerror = function () {
             console.error("add error", this.error);
