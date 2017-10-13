@@ -24,14 +24,14 @@
 		</table>
 		<div id="addItemCon" style="display:none;">
 		<div class="addItemTitle">添加</div>
-		<div><input type="text" id="name" placeholder="请输入名称"/></div>
-		<div><input type="text" id="url"  placeholder="请输网址：https://或http://开头"/></div>
+		<div><label style="font-size:17px;width:10%">名  称: </label></input><input style="width:87%;" type="text" id="name" placeholder="请输入名称"/></div>
+		<div><label style="font-size:17px;width:10%">网  址: </label><input style="width:87%;" type="text" id="url"  placeholder="请输网址：https://或http://开头"/></div>
 		<div>
-		    <input type="text" id="pic" placeholder="请输入图片URL或颜色值，如http://a.com/a.jpg或#FFFFFF" />
-			<button id="picker" style="float:right;">选择颜色</button>
+		    <label style="font-size:17px;width:10%">图  片: </label><input style="width:87%;" type="text" id="pic" placeholder="请输入图片URL或颜色值，如http://a.com/a.jpg或#FFFFFF" />
+			<button id="picker" style="width:48%;">选择颜色</button><button id="browser" style="margin-left:4%;width:48%;">选择图片</button><input id="upload" name="upload" accept="image/*" type="file" title="选择图片" style="display: none"/>
 		</div>
 		
-		<button id="addItem">保存</button><button id="cancel">取消</button>
+		<div style="margin:0px auto;padding-top:10px;"><button id="addItem" style="width:48%;">保存</button><button id="cancel" style="margin-left:4%;width:48%;">取消</button></div>
 		<!-- add锚点:点击添加时跳转到最底，显示添加区域 -->
 		<a name="add" id="add" href="#add"> </a>
 		</div>

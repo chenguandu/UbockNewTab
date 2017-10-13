@@ -39,7 +39,7 @@ input{
 
 input:focus{
     border-bottom:2px #3199F9 solid;
-	link rel('favico.png"');
+	link rel('favicon.png"');
 }
 
 button{
@@ -79,7 +79,7 @@ table td{
 	padding:5px;
 }
 
-#addItemCon{margin:0 auto;width:400px;height:auto;} 
-.addItemTitle{margin:0 auto;width:100%;height:auto;text-align:center;}
+#addItemCon{margin:0 auto;max-width:500px;height:auto;} 
+.addItemTitle{margin:0 auto;width:150px;height:30px;text-align:center;font-size:17px;}
 
 

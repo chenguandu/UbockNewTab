@@ -8,6 +8,8 @@ $(document).ready(function () {
     var init = false;
 	//当前编辑项id
 	var currentId = 0;
+	//图片
+	var blob;
     var myDB = {
         name: 'ubock',
         version: 1,
@@ -35,8 +37,38 @@ $(document).ready(function () {
     $('#picker').colpick({
         onSubmit: setColor
     });
+	
+	$("#browser").click(function () {
+		$("#upload").click(); //隐藏了input:file样式后
+		$("#upload").on("change",function(){
+			blob = this.files[0];
+			var objUrl = getObjectURL(blob) ; //获取图片的路径，该路径不是图片在本地的路径
+			if (objUrl) {
+				$("#pic").val(blob.name) ; //将图片路径存入src中，显示出图片
+			}
+		});
+	});
 
     $("#addItem").on('click', saveData);
+	
+	$("#cancel").on('click', function(){
+		//取消编辑清空id
+		currentId = 0;
+		ff('addItemCon').style.display = "none";
+	});
+	
+	//建立一個可存取到該file的url
+	function getObjectURL(file) {
+		 var url = null ;
+		 if (window.createObjectURL!=undefined) { // basic
+			url = window.createObjectURL(file) ;
+		 } else if (window.URL!=undefined) { // mozilla(firefox)
+			url = window.URL.createObjectURL(file) ;
+		 } else if (window.webkitURL!=undefined) { // webkit or chrome
+			url = window.webkitURL.createObjectURL(file) ;
+		 }
+		 return url ;
+	}
 
     function saveData() {
         if (checkInput()) {
@@ -44,16 +76,18 @@ $(document).ready(function () {
             if (url.indexOf('http://') != 0 && url.indexOf('https://') != 0) {
                 url = 'http://' + url;
             }
+			var img = ff('pic').value;
 			if (currentId != 0){
-				updateById({id:currentId, title: ff('name').value, url, icon: ff('pic').value})
+				updateById({id:currentId, title: ff('name').value, url, icon: img, blob})
 			} else {
-				addList.push({title: ff('name').value, url, icon: ff('pic').value});
+				addList.push({title: ff('name').value, url, icon: img, blob});
 				addData();
 			}
         }
     }
 
     function setColor(hsb, hex, rgb, el) {
+		blob = undefined;
         ff('pic').value = '#' + hex;
         $('#picker').colpickHide();
     }
@@ -72,6 +106,10 @@ $(document).ready(function () {
                 var title = cursor.value.title;
                 var url = cursor.value.url;
                 var icon = cursor.value.icon;
+				var img = cursor.value.blob;
+				if (img){
+					icon = getObjectURL(img);
+				}
                 if (i % config.cols == 0) {
                     ii++;
                     $('table').append('<tr id=id' + ii + '></tr>');
@@ -309,6 +347,7 @@ $(document).ready(function () {
 		ff('name').value = "";
 		ff('url').value = "";
 		ff('pic').value = "";
+		blob = undefined;
 	}
 
 	//$("#TablebillList tbody tr").bind("mousedown", menu);
@@ -329,13 +368,9 @@ $(document).ready(function () {
                     text: "添加",
                     func: function () {
 						currentId = 0;
+						blob = undefined;
 						$('.addItemTitle').html("添加");
                         showEditor('','','');
-						$("#cancel").on('click', function(){
-							    //取消编辑清空id
-							    currentId = 0;
-								ff('addItemCon').style.display = "none";
-							});
                     }
                 }, {
                     text: "编辑",
@@ -345,6 +380,7 @@ $(document).ready(function () {
 						console.log("current edit item id = " + currentId);
 						getById(currentId, function(result){
 							console.log(result);
+							blob = result.blob;
 							showEditor(result.title, result.url, result.icon);
 						});
                     }
