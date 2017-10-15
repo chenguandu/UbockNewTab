@@ -10,6 +10,8 @@ $(document).ready(function () {
 	var currentId = 0;
 	//图片
 	var blob;
+	//背景图片
+	var blobBack = undefined;
     var myDB = {
         name: 'ubock',
         version: 1,
@@ -18,7 +20,9 @@ $(document).ready(function () {
     var config = {
         cols: 4,
         item_w: 200,
-        item_h: 113
+        item_h: 113,
+		bg:'../images/bg.png',
+		bgBlob:undefined
     }
     var item = {
         title: null,
@@ -27,8 +31,6 @@ $(document).ready(function () {
     }
     var storeName = 'bookmark';
     var addList = new Array();//等侍添加的列表，因为添加是异步的所以使用个列表来逐个添加，解决显示重复问题
-
-    $('<style></style>').html('td,td a div{width:' + config.item_w + 'px;height:' + config.item_h + 'px; }').appendTo('head');
 
     initDB(myDB.name, myDB.version);
 	$('html').mousedown(menu);
@@ -41,11 +43,35 @@ $(document).ready(function () {
 	$("#browser").click(function () {
 		$("#upload").click(); //隐藏了input:file样式后
 		$("#upload").on("change",function(){
-			blob = this.files[0];
-			var objUrl = getObjectURL(blob) ; //获取图片的路径，该路径不是图片在本地的路径
-			if (objUrl) {
-				$("#pic").val(blob.name) ; //将图片路径存入src中，显示出图片
+			var temp = this.files[0];
+			var size = temp.size;
+			console.log("file size:"+size);
+			if (size/1024 > 300){
+				DJMask.alert("图片大小不能超过300KB", function () {});
+				return false;
 			}
+			blob = temp;
+			/* var objUrl = getObjectURL(blob) ; *///获取图片的路径,可用于预览，该路径不是图片在本地的路径
+			$("#pic").val('file://'+blob.name);
+		});
+	});
+	
+	$("#browserBg").click(function () {
+		$("#uploadBg").click(); //隐藏了input:file样式后
+		$("#uploadBg").on("change",function(){
+			var temp = this.files[0];
+			var size = temp.size;
+			console.log("file size:"+size);
+			if (size/1024 > 1024){
+				DJMask.alert("图片大小不能超过1MB", function () {});
+				return false;
+			}
+			blobBack = temp;
+			var objUrl = getObjectURL(blobBack) ;//获取图片的路径,可用于预览，该路径不是图片在本地的路径
+			//$('<style></style>').html('.backgroundstyle{\nbackground:url("'+objUrl+'") no-repeat;\nbackground-size:100%;\n}').appendTo('head');
+			//$('body').addClass('backgroundstyle');
+			$('body').css({'background':'url("'+objUrl+'") no-repeat center center', 'background-size':'100% 100%','background-attachment':'fixed'});
+			$("#background").val("file://"+blobBack.name);
 		});
 	});
 
@@ -57,7 +83,51 @@ $(document).ready(function () {
 		ff('addItemCon').style.display = "none";
 	});
 	
-	//建立一個可存取到該file的url
+	//执行保存设置
+    $('#saveSettings').on('click', function(){
+		saveSettings();
+    });
+	
+	
+    $('#cancelSettings').on('click', function(){
+		blobBack = undefined;
+		closeSettings();
+    });
+	
+	//关闭设置
+	function closeSettings(){
+		$('.settingsCon').css({'display':'none'});
+	}
+	
+	//保存设置
+	function saveSettings(){
+		var transaction = myDB.db.transaction('config', 'readwrite');
+        var store = transaction.objectStore('config');
+		var type = undefined;
+		var bg = $('#background').val();
+		config.bg = bg;
+		if (bg.length > 7){
+			type = bg.substring(0, 7);
+		}
+		if (type != undefined && type.toLowerCase() == 'file://'){
+			if (blobBack){
+				config.bgBlob = blobBack;
+			}
+		} else {
+			config.bgBlob = undefined;
+		}
+        var req = store.put(config, 'config');
+        req.onsuccess = function (evt) {
+			console.log(config);
+			DJMask.msg("保存成功");
+        };
+        req.onerror = function (evt) {
+            console.error("error", this.error);
+			DJMask.alert("保存失败");
+        };
+	}
+	
+	//blob对象转为图片的url
 	function getObjectURL(file) {
 		 var url = null ;
 		 if (window.createObjectURL!=undefined) { // basic
@@ -77,10 +147,24 @@ $(document).ready(function () {
                 url = 'http://' + url;
             }
 			var img = ff('pic').value;
-			if (currentId != 0){
-				updateById({id:currentId, title: ff('name').value, url, icon: img, blob})
+			
+			var type = undefined;
+			var item = {title: ff('name').value, url, icon: img, blob};
+			if (img.length > 7){
+				type = img.substring(0, 7);
+			}
+			if (type != undefined && type.toLowerCase() == 'file://'){
+				if (blob){
+					item.blob = blob;
+				}
 			} else {
-				addList.push({title: ff('name').value, url, icon: img, blob});
+				item.blob = undefined;
+			}
+			
+			if (currentId != 0){
+				updateById($.extend({},item,{'id':currentId}));
+			} else {
+				addList.push(item);
 				addData();
 			}
         }
@@ -107,14 +191,31 @@ $(document).ready(function () {
                 var url = cursor.value.url;
                 var icon = cursor.value.icon;
 				var img = cursor.value.blob;
-				if (img){
-					icon = getObjectURL(img);
+				
+				var file = true;
+				var type = undefined;
+				if (icon != undefined){
+					if (icon.length > 7){
+						type = icon.substring(0, 7);
+					} else if (icon.length > 1){
+						type = icon.substring(0, 1);
+					}
 				}
+				if (type != undefined){
+					if (type.toLowerCase() == 'file://'){
+						icon = getObjectURL(img);
+					} else if (type.toLowerCase() == '#'){
+						file = false;
+					}
+				}
+				
+				
+				
                 if (i % config.cols == 0) {
                     ii++;
                     $('table').append('<tr id=id' + ii + '></tr>');
                 }
-                if (icon != null && icon.length > 1 && icon.substring(0, 1) == '#') {
+                if (!file) {
                     $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item" style="background:' + icon + ';line-height:' + config.item_h + 'px;">' + title + '</p></div></a>').appendTo('#id' + ii);
                 } else {
                     $('<td></td>').html('<a id="con' + id + '" href="' + url + '"><div id="item' + id + '" class="item"  style="line-height:' + config.item_h + 'px;"><img style="width:100%;height:100%;" id="imgs' + id + '" src="' + icon + '" onerror="onImageError();" alt="' + title + '"/></div></a>').appendTo('#id' + ii);
@@ -161,7 +262,7 @@ $(document).ready(function () {
         request.onupgradeneeded = function (e) {
             var db = e.target.result;
             if (!db.objectStoreNames.contains('config')) {
-                db.createObjectStore('config', {autoIncrement: true});
+                db.createObjectStore('config');
             }
             if (!db.objectStoreNames.contains(storeName)) {
                 var store = db.createObjectStore(storeName, {keyPath: 'id', autoIncrement: true});
@@ -169,26 +270,64 @@ $(document).ready(function () {
             console.log('DB version changed to ' + version);
         };
     }
+	
+	function initInfo(){
+		$('<style></style>').html('td,td a div{width:' + config.item_w + 'px;height:' + config.item_h + 'px; }').appendTo('head');
+		var bg = config.bg;
+		var file = true;
+		var type = undefined;
+		if (bg != undefined){
+			if (bg.length > 7){
+				type = bg.substring(0, 7);
+			} else if (bg.length > 1){
+				type = bg.substring(0, 1);
+			}
+		}
+		if (type != undefined){
+			if (type.toLowerCase() == 'file://'){
+				bg = getObjectURL(config.bgBlob);
+			} else if (type.toLowerCase() == '#'){
+				file = false;
+			}
+		}
+		
+		$('#background').val(config.bg);
+		if (file){
+			$('body').css({'background':'url("'+bg+'") no-repeat center center', 'background-size':'100% 100%','background-attachment':'fixed'});
+		} else {
+			//$('body').css({'background':''+bg+')'});
+			ff("ubock").style.background = bg;
+		}
+	}
 
     function onInit() {
         init = true;
         var transaction = myDB.db.transaction('config', 'readwrite');
         var store = transaction.objectStore('config');
-        var req = store.count();
+        var req = store.get('config');
         req.onsuccess = function (evt) {
-            var count = evt.target.result;
-            if (count == 0) {
-                store.put(config);
-            }
+            var conf = evt.target.result;
+            if (conf == undefined) {//设置默认配置信息
+                store.put(config, 'config');
+            } else {
+				config = conf;
+				console.log(config);
+			}
+			initInfo();
+			fetchList();
         };
         req.onerror = function (evt) {
             console.error("error", this.error);
+			initInfo();
+			fetchList();
         };
-
-        var transaction2 = myDB.db.transaction(storeName, 'readwrite');
-        var store2 = transaction2.objectStore(storeName);
-        var req2 = store2.count();
-        req2.onsuccess = function (evt) {
+    }
+	
+	function fetchList(){
+		var transaction = myDB.db.transaction(storeName, 'readwrite');
+        var store = transaction.objectStore(storeName);
+        var req = store.count();
+        req.onsuccess = function (evt) {
             var count = evt.target.result;
             console.log('Totals:' + count);
             if (count == 0) {
@@ -197,10 +336,10 @@ $(document).ready(function () {
                 getList();
             }
         };
-        req2.onerror = function (evt) {
+        req.onerror = function (evt) {
             console.error("error", this.error);
         };
-    }
+	}
 
     function addData() {
         if (addList == null || addList.length == 0) {
@@ -395,6 +534,11 @@ $(document).ready(function () {
 						}							
 						console.log("delete item id = " + delId);
 						deleteById(delId);
+                    }
+                }, {
+                    text: "设置",
+                    func: function () {
+						$('.settingsCon').attr('style','display:block');
                     }
                 }, {
                     text: "关闭",

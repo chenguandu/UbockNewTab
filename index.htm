@@ -15,25 +15,35 @@
 		<title>优博客启动页</title>
 		
 	</head>
-	<body>
+	<body id="ubock">
 		<form action="https://www.baidu.com/s" method="get">
 			<input type="text" name="wd" id="wd" value="" /><button type="submit">百度搜索</button>
 		</form>
 		<table id="list">
 
 		</table>
-		<div id="addItemCon" style="display:none;">
+		<div id="addItemCon" style="display:none; background-color:#FFFFFF;">
 		<div class="addItemTitle">添加</div>
 		<div><label style="font-size:17px;width:10%">名  称: </label></input><input style="width:87%;" type="text" id="name" placeholder="请输入名称"/></div>
 		<div><label style="font-size:17px;width:10%">网  址: </label><input style="width:87%;" type="text" id="url"  placeholder="请输网址：https://或http://开头"/></div>
 		<div>
 		    <label style="font-size:17px;width:10%">图  片: </label><input style="width:87%;" type="text" id="pic" placeholder="请输入图片URL或颜色值，如http://a.com/a.jpg或#FFFFFF" />
-			<button id="picker" style="width:48%;">选择颜色</button><button id="browser" style="margin-left:4%;width:48%;">选择图片</button><input id="upload" name="upload" accept="image/*" type="file" title="选择图片" style="display: none"/>
+			<button id="picker" style="width:48%;">选择颜色</button><button id="browser" style="margin-left:4%;width:48%;">选择图片(推荐:200x113,<300KB)</button><input id="upload" name="upload" accept="image/*" type="file" title="选择图片" style="display: none"/>
 		</div>
 		
-		<div style="margin:0px auto;padding-top:10px;"><button id="addItem" style="width:48%;">保存</button><button id="cancel" style="margin-left:4%;width:48%;">取消</button></div>
+		<div style="margin:0px auto;padding-top:10px;"><button id="addItem" style="width:50%;border:1px #CCCCCC solid;">保存</button><button id="cancel" style="width:50%;border:1px #CCCCCC solid;">取消</button></div>
 		<!-- add锚点:点击添加时跳转到最底，显示添加区域 -->
 		<a name="add" id="add" href="#add"> </a>
+		</div>
+		<!-- 设置区域,右边浮动 -->
+		<div class="settingsCon">
+		    <div class="mask"> </div>
+			<div class="settings">
+				<label>设置</label>
+				<div style="margin:0px;margin-top:10px;"><label style="font-size:17px;width:10%;">背景: </label></input><input style="width:80%;" type="text" id="background" placeholder="图片URL或#FFFFFF或选择图片↓"/></div>
+				<div><button id="browserBg" style="width:100%;margin-top:5px;border:1px #CCCCCC solid;">选择图片(小于1MB)</button><input id="uploadBg" name="uploadBg" accept="image/*" type="file" title="选择图片" style="display: none;"/></div>
+				<div><button id="saveSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">保 存</button><button id="cancelSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">取 消</button></div>
+			</div>
 		</div>
 	</body>
 </html>
