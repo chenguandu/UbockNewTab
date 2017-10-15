@@ -27,7 +27,6 @@ form{
 }
 
 input{
-	width:400px;
 	border-radius:0px 0px 0px 0px;
 	margin:0px;
 	background:#FFF;
@@ -44,6 +43,10 @@ input{
 input:focus{
     border-bottom:2px #3199F9 solid;
 	link rel('favicon.png"');
+}
+
+#addItemCon input{
+	width:400px;
 }
 
 button{
@@ -109,10 +112,11 @@ table td{
 	padding-top:50px;
 	width:300px;
 	height:100%;
+	position:fixed;   
 	background-color:#ffffff;
 	border-right:1px #cccccc solid;
 	opacity:1.0;
-	position:fixed;
 	top:0;
 }
+
 

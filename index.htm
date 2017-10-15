@@ -17,18 +17,18 @@
 	</head>
 	<body id="ubock">
 		<form action="https://www.baidu.com/s" method="get">
-			<input type="text" name="wd" id="wd" value="" /><button type="submit">百度搜索</button>
+			<input type="text" name="wd" id="wd" value="" style="width:400px;" /><button type="submit">百度搜索</button>
 		</form>
 		<table id="list">
 
 		</table>
 		<div id="addItemCon" style="display:none; background-color:#FFFFFF;">
 		<div class="addItemTitle">添加</div>
-		<div><label style="font-size:17px;width:10%">名  称: </label></input><input style="width:87%;" type="text" id="name" placeholder="请输入名称"/></div>
+		<div><label style="font-size:17px;width:10%">名  称: </label><input style="width:87%;" type="text" id="name" placeholder="请输入名称"/></div>
 		<div><label style="font-size:17px;width:10%">网  址: </label><input style="width:87%;" type="text" id="url"  placeholder="请输网址：https://或http://开头"/></div>
 		<div>
 		    <label style="font-size:17px;width:10%">图  片: </label><input style="width:87%;" type="text" id="pic" placeholder="请输入图片URL或颜色值，如http://a.com/a.jpg或#FFFFFF" />
-			<button id="picker" style="width:48%;">选择颜色</button><button id="browser" style="margin-left:4%;width:48%;">选择图片(推荐:200x113,<300KB)</button><input id="upload" name="upload" accept="image/*" type="file" title="选择图片" style="display: none"/>
+			<button id="picker" style="width:48%;">选择颜色</button><button id="browser" style="margin-left:4%;width:48%;">浏览图片(推荐:200x113,<300KB)</button><input id="upload" name="upload" accept="image/*" type="file" title="选择图片" style="display: none"/>
 		</div>
 		
 		<div style="margin:0px auto;padding-top:10px;"><button id="addItem" style="width:50%;border:1px #CCCCCC solid;">保存</button><button id="cancel" style="width:50%;border:1px #CCCCCC solid;">取消</button></div>
@@ -40,8 +40,27 @@
 		    <div class="mask"> </div>
 			<div class="settings">
 				<label>设置</label>
-				<div style="margin:0px;margin-top:10px;"><label style="font-size:17px;width:10%;">背景: </label></input><input style="width:80%;" type="text" id="background" placeholder="图片URL或#FFFFFF或选择图片↓"/></div>
-				<div><button id="browserBg" style="width:100%;margin-top:5px;border:1px #CCCCCC solid;">选择图片(小于1MB)</button><input id="uploadBg" name="uploadBg" accept="image/*" type="file" title="选择图片" style="display: none;"/></div>
+				<div style="margin:0px;margin-top:10px;width:100%;text-align:left;">项</div>
+				<div style="height:1px;border-bottom:1px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<div><label style="font-size:17px;width:10%">宽度:</label><input style="width:75%;" type="text" id="item_width" placeholder="单位:px"/></div>
+				<div><label style="font-size:17px;width:10%">高度:</label><input style="width:75%;" type="text" id="item_height" placeholder="单位:px"/></div>
+				<div><label style="font-size:17px;width:10%">列数:</label><input style="width:75%;" type="text" id="columns"/></div>
+				<div style="height:3px;border-bottom:3px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<div style="margin:0px;margin-top:10px;width:100%;text-align:left;">背景</div>
+				<div style="height:1px;border-bottom:1px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<div><input style="width:95%;" type="text" id="background" placeholder="图片URL或#FFFFFF或选择图片↓"/></div>
+				<div><button id="browserBg" style="width:100%;margin-top:5px;border:1px #CCCCCC solid;">浏览图片(小于1MB)</button><input id="uploadBg" name="uploadBg" accept="image/*" type="file" title="选择图片" style="display: none;"/></div>
+				<div style="margin:0px;margin-top:10px;width:100%;">
+					<label><input name="bg_type" type="radio" value="0" />平铺</label>
+					<label><input name="bg_type" type="radio" value="1" />水平平铺</label>
+					<label><input name="bg_type" type="radio" value="2" />垂直平铺</label>
+					<label><input name="bg_type" type="radio" value="3" />拉伸</label>
+				</div>
+				<div style="height:1px;border-bottom:1px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<div style="margin:0px;margin-top:10px;width:100%;">
+					<label><input name="bg_scroll_type" type="radio" value="0" checked />固定</label>
+					<label><input name="bg_scroll_type" type="radio" value="1" />随内容滚动</label>
+				</div>
 				<div><button id="saveSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">保 存</button><button id="cancelSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">取 消</button></div>
 			</div>
 		</div>

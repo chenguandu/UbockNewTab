@@ -22,7 +22,9 @@ $(document).ready(function () {
         item_w: 200,
         item_h: 113,
 		bg:'../images/bg.png',
-		bgBlob:undefined
+		bgBlob:undefined,
+		bg_type:0,
+		bg_scroll_type:0
     }
     var item = {
         title: null,
@@ -116,6 +118,11 @@ $(document).ready(function () {
 		} else {
 			config.bgBlob = undefined;
 		}
+		config.bg_type = $("input[name='bg_type']:checked").val();
+		config.bg_scroll_type = $("input[name='bg_scroll_type']:checked").val();
+		config.cols = $('#columns').val();
+		config.item_w = $('#item_width').val();
+		config.item_h = $('#item_height').val();
         var req = store.put(config, 'config');
         req.onsuccess = function (evt) {
 			console.log(config);
@@ -292,10 +299,36 @@ $(document).ready(function () {
 		}
 		
 		$('#background').val(config.bg);
+		$('#columns').val(config.cols);
+		$('#item_width').val(config.item_w);
+		$('#item_height').val(config.item_h);
 		if (file){
-			$('body').css({'background':'url("'+bg+'") no-repeat center center', 'background-size':'100% 100%','background-attachment':'fixed'});
+			var bgStyle;
+			var bgType;
+			document.getElementsByName('bg_type')[config.bg_type].checked = true;
+			document.getElementsByName('bg_scroll_type')[config.bg_scroll_type].checked = true;
+			if (config.bg_type == 0){//背景平铺
+				bgType = 'repeat';
+			} else if (config.bg_type == 1){//背景水平平铺
+				bgType = 'repeat-x';
+			} else if (config.bg_type == 2){//背景垂直平铺
+				bgType = 'repeat-y';
+			} else if (config.bg_type == 3){//背景拉伸
+				bgType = 'no-repeat';
+			} else {
+				bgType = 'repeat';
+			}
+			bgStyle = $.extend({},{},{'background':'url("'+bg+'") '+bgType+' center center'});
+			if (config.bg_type == 3){
+				bgStyle = $.extend({},bgStyle,{'background-size':'100% 100%'});
+			}
+			if (config.bg_scroll_type == 0){//背景固定
+				bgStyle = $.extend({},bgStyle,{'background-attachment':'fixed'});
+			} else {//背景随内容滚动
+				bgStyle = $.extend({},bgStyle,{'background-attachment':'scroll'});
+			}
+			$('body').css(bgStyle);
 		} else {
-			//$('body').css({'background':''+bg+')'});
 			ff("ubock").style.background = bg;
 		}
 	}
