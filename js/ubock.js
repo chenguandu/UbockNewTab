@@ -17,14 +17,17 @@ $(document).ready(function () {
         version: 1,
         db: null
     };
+	//默认设置
     var config = {
         cols: 4,
         item_w: 200,
         item_h: 113,
 		bg:'../images/bg.png',
 		bgBlob:undefined,
-		bg_type:0,
-		bg_scroll_type:0
+		bg_type:3,
+		bg_scroll_type:0,
+		show_search:true,
+		top:50
     }
     var item = {
         title: null,
@@ -96,6 +99,40 @@ $(document).ready(function () {
 		closeSettings();
     });
 	
+	$('#clear_settings').on('click', function(){
+		DJMask.alert("确认要恢复默认设置吗？",deleteConfig, "恢复默认设置");
+    });
+	
+	$('#clear_data').on('click', function(){
+		DJMask.alert("确认要清除所有数据吗？",deleteData, "清除数据");
+    });
+	
+	//恢复默认设置
+	function deleteConfig(){
+		var transaction = myDB.db.transaction('config', 'readwrite');
+		var store = transaction.objectStore('config');
+		var req = store.delete('config');
+		req.onsuccess = function (evt) {
+			DJMask.msg("恢复默认设置成功");
+			window.location.href = "index.htm";
+		};
+		req.onerror = function (evt) {
+			console.error("error", this.error);
+			DJMask.alert("恢复默认设置失败");
+		};
+	}
+	
+	//清除所有数据，包括设置和添加的网站数据
+	function deleteData(){
+		var request = window.indexedDB.deleteDatabase(myDB.name);
+		if (request){
+			DJMask.msg("清除数据成功");
+			window.location.href = "index.htm";
+		} else {
+			DJMask.alert("清除数据失败");
+		}
+	}
+	
 	//关闭设置
 	function closeSettings(){
 		$('.settingsCon').css({'display':'none'});
@@ -123,8 +160,21 @@ $(document).ready(function () {
 		config.cols = $('#columns').val();
 		config.item_w = $('#item_width').val();
 		config.item_h = $('#item_height').val();
+		config.top = $('#top').val();
+		//$('#list').css({'margin-top':'"'+config.top+'px"'});
+		ff('list').style.marginTop = config.top + "px";
+		if ($("input[name='show_search']:checked").val() == 'true'){
+			config.show_search = true;
+		} else {
+			config.show_search = false;
+		}
         var req = store.put(config, 'config');
         req.onsuccess = function (evt) {
+			if (config.show_search){
+				ff('searchform').style.display="block";
+			} else {
+				ff('searchform').style.display="none";
+			}
 			console.log(config);
 			DJMask.msg("保存成功");
         };
@@ -302,6 +352,15 @@ $(document).ready(function () {
 		$('#columns').val(config.cols);
 		$('#item_width').val(config.item_w);
 		$('#item_height').val(config.item_h);
+		$('#top').val(config.top);
+		ff('list').style.marginTop = config.top + "px";
+		document.getElementsByName('show_search')[0].checked = config.show_search;
+		if (config.show_search){
+			ff('searchform').style.display="block";
+		} else {
+			ff('searchform').style.display="none";
+		}
+		
 		if (file){
 			var bgStyle;
 			var bgType;

@@ -16,7 +16,7 @@
 		
 	</head>
 	<body id="ubock">
-		<form action="https://www.baidu.com/s" method="get">
+		<form id="searchform" action="https://www.baidu.com/s" method="get">
 			<input type="text" name="wd" id="wd" value="" style="width:400px;" /><button type="submit">百度搜索</button>
 		</form>
 		<table id="list">
@@ -45,6 +45,13 @@
 				<div><label style="font-size:17px;width:10%">宽度:</label><input style="width:75%;" type="text" id="item_width" placeholder="单位:px"/></div>
 				<div><label style="font-size:17px;width:10%">高度:</label><input style="width:75%;" type="text" id="item_height" placeholder="单位:px"/></div>
 				<div><label style="font-size:17px;width:10%">列数:</label><input style="width:75%;" type="text" id="columns"/></div>
+				<div><label style="font-size:17px;width:10%">顶部距离:</label><input style="width:63%;" type="text" id="top" placeholder="单位:px"/></div>
+				
+				<div style="height:3px;border-bottom:3px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<div style="margin:0px;margin-top:10px;width:100%;text-align:left;">搜索引擎</div>
+				<div style="height:1px;border-bottom:1px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<label><input name="show_search" type="checkbox" value="true" />启用</label>
+				
 				<div style="height:3px;border-bottom:3px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
 				<div style="margin:0px;margin-top:10px;width:100%;text-align:left;">背景</div>
 				<div style="height:1px;border-bottom:1px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
@@ -61,7 +68,13 @@
 					<label><input name="bg_scroll_type" type="radio" value="0" checked />固定</label>
 					<label><input name="bg_scroll_type" type="radio" value="1" />随内容滚动</label>
 				</div>
-				<div><button id="saveSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">保 存</button><button id="cancelSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">取 消</button></div>
+				
+				<div style="height:3px;border-bottom:3px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				<div style="margin:0px;margin-top:5px;width:100%;text-align:left;"><button id="clear_settings" style="width:100%;margin-top:5px;border:1px #CCCCCC solid;">恢复默认设置</button></div>
+				<div style="margin:0px;margin-top:5px;width:100%;text-align:left;"><button id="clear_data" style="width:100%;margin-top:5px;border:1px #CCCCCC solid;">清除所有数据</button></div>
+				<div style="height:3px;border-bottom:3px #CCCCCC solid;margin-top:5px;margin-bottom:3px;"> </div>
+				
+				<div><button id="saveSettings" style="width:50%;margin-top:5px;border:1px #CCCCCC solid;">保 存</button><button id="cancelSettings" style="width:50%;border:1px #CCCCCC solid;">取 消</button></div>
 			</div>
 		</div>
 	</body>
