@@ -446,6 +446,7 @@ $(document).ready(function () {
             if (addList.length > 0) {
                 addData();
             } else {
+				hideEditor();
                 getList();
             }
 			clearEditor();
