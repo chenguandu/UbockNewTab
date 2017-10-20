@@ -354,6 +354,7 @@ $(document).ready(function () {
 		$('#item_height').val(config.item_h);
 		$('#top').val(config.top);
 		ff('list').style.marginTop = config.top + "px";
+		$('#browser').text("浏览图片(推荐:"+ config.item_w +"x"+ config.item_h +",<300KB)");
 		document.getElementsByName('show_search')[0].checked = config.show_search;
 		if (config.show_search){
 			ff('searchform').style.display="block";

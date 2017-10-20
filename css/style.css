@@ -109,7 +109,7 @@ table td{
 }
 .settings{
 	margin:0 auto;
-	padding-top:50px;
+	padding-top:30px;
 	width:300px;
 	height:100%;
 	position:fixed;   
@@ -117,6 +117,7 @@ table td{
 	border-right:1px #cccccc solid;
 	opacity:1.0;
 	top:0;
+	overflow-y:auto;
 }
 
 
