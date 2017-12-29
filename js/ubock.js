@@ -177,6 +177,7 @@ $(document).ready(function () {
 			}
 			console.log(config);
 			DJMask.msg("保存成功");
+			 window.location.reload();
         };
         req.onerror = function (evt) {
             console.error("error", this.error);
