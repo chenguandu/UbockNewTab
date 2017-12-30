@@ -5,3 +5,4 @@
 修改git中文乱
 
 ![screenshot](images/screenshot.jpg)
+![screenshot](images/screenshot2.jpg)
