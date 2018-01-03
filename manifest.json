@@ -1,7 +1,7 @@
 ﻿{
 	"name": "UBOCK",
-	"description": "优博客启动标签页",
-	"version": "2.0",
+	"description": "优博客启动标签页，支付自定义的Chrome浏览器启动页，没有广告，可以离线使用，简单、干净",
+	"version": "2.1.0",
 	"manifest_version": 2,
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
 	"chrome_url_overrides": {
